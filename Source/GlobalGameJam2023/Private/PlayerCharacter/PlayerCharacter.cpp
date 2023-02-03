@@ -7,6 +7,8 @@
 #include "PlayerCharacterCameraController.h"
 #include "PlayerCharacterMovementComponent.h"
 #include "PlayerCharacterVFXController.h"
+#include "CinematicCamera/Public/CineCameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "GlobalGameJam2023/GlobalGameJam2023.h"
 
 // Define macros
@@ -29,6 +31,15 @@ APlayerCharacter::APlayerCharacter()
 
 	VFXController = CreateDefaultSubobject<UPlayerCharacterVFXController>(TEXT("VFX Controller"));
 	VFXController->bWantsInitializeComponent = true;
+	
+	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Arm"));
+	CameraArm->bWantsInitializeComponent = true;
+	CameraArm->SetupAttachment(this->RootComponent);
+
+	Camera = CreateDefaultSubobject<UCineCameraComponent>(TEXT("Camera"));
+	Camera->bWantsInitializeComponent = true;
+	Camera->SetupAttachment(CameraArm);
+	
 }
 
 // Called after construction, but before Beginplay.
@@ -81,7 +92,7 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	RotateToMouseCursor();
 }
 
 // Called to bind functionality to input
@@ -90,4 +101,23 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+void APlayerCharacter::RotateToMouseCursor()
+{
+	if (const APlayerController* PlayerController {GetWorld()->GetFirstPlayerController()})
+	{
+		FVector MouseLocation, MouseDirection;
+		PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
+        
+		const FVector PlayerLocation {GetActorLocation()};
+		const FVector TargetLocation {MouseLocation + MouseDirection * (PlayerLocation - MouseLocation).Size()};
+        
+		FRotator TargetRotation = (TargetLocation - PlayerLocation).Rotation();
+		TargetRotation.Pitch = 0.0f;
+		TargetRotation.Roll = 0.0f;
+        
+		SetActorRotation(TargetRotation);
+	}
+}
+
 

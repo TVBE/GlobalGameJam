@@ -4,7 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "CineCameraComponent.h"
 #include "PlayerCharacter.generated.h"
+
+UENUM(BlueprintType)
+enum EAxisOrientation
+{
+	LONGITUDINAL				UMETA(DisplayName = "Longitudinal"),
+	LATERAL						UMETA(DisplayName = "Lateral"),
+};
 
 UCLASS()
 class APlayerCharacter : public ACharacter
@@ -16,17 +24,25 @@ private:
 	UPROPERTY(BlueprintGetter = GetCameraController, EditAnywhere, Category = Components, Meta = (DisplayName = "Camera Controller"))
 	class UPlayerCharacterCameraController* CameraController {nullptr};
 
-	/* The Audio Controller responsible for handling player audio. */
+	/** The Audio Controller responsible for handling player audio. */
 	UPROPERTY(BlueprintGetter = GetAudioController, EditAnywhere, Category = Components, Meta = (DisplayName = "Audio Controller"))
 	class UPlayerCharacterAudioController* AudioController {nullptr};
 
-	/* The VFX Controller responsible for handling player VFX. */
+	/** The VFX Controller responsible for handling player VFX. */
 	UPROPERTY(BlueprintGetter = GetVFXController, EditAnywhere, Category = Components, Meta = (DisplayName = "VFX Controller"))
 	class UPlayerCharacterVFXController* VFXController {nullptr};
 
-	/* The Movement Component responsible for handling player audio. */
+	/** The Movement Component responsible for handling player audio. */
 	UPROPERTY(BlueprintGetter = GetPlayerCharacterMovement, Category = Components, Meta = (DisplayName = "Player Character Movement"))
 	class UPlayerCharacterMovementComponent* PlayerCharacterMovement {nullptr};
+
+	/** The Camera for the player.*/
+	UPROPERTY(BlueprintGetter = GetCamera, EditAnywhere, Category = Components, Meta = (DisplayName = "Camera"))
+	class UCineCameraComponent* Camera {nullptr};
+
+	/** The camera arm for the player. */
+	UPROPERTY(BlueprintGetter = GetCameraArm, EditAnywhere, Category = Components, Meta = (DisplayName = "Camera Arm"))
+	class USpringArmComponent* CameraArm {nullptr};
 	
 public:
 	// Sets default values for this character's properties
@@ -61,6 +77,18 @@ public:
 	/** Returns the player CharacterMovementComponent. */
 	UFUNCTION(BlueprintGetter, Category = Components, Meta = (DisplayName = "Player Character Movement Component"))
 	FORCEINLINE UPlayerCharacterMovementComponent* GetPlayerCharacterMovement() const {return PlayerCharacterMovement; }
+
+	/** Returns the Camera. */
+	UFUNCTION(BlueprintGetter, Category = Components, Meta = (DisplayName = "Camera"))
+	FORCEINLINE UCineCameraComponent* GetCamera() const {return Camera; }
+
+	/** Returns the Camera Arm. */
+	UFUNCTION(BlueprintGetter, Category = Components, Meta = (DisplayName = "Camera Arm."))
+	FORCEINLINE USpringArmComponent* GetCameraArm() const {return CameraArm; }
+
+	/** Converts the camera rotation to an axis input. */
+	UFUNCTION()
+	void RotateToMouseCursor();
 
 #if WITH_EDITOR
 	/** Checks whether an object is a blueprint derived class or not. */
