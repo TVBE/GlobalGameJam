@@ -134,8 +134,16 @@ public:
 	 *	@Active Whether the Fire InputAction is being pressed or released
 	 */
 	UFUNCTION(BlueprintNativeEvent, Category = Default, Meta = (DisplayName = "Fire"))
-	void Fire(const bool Active);
+	void EventFire(const bool Active);
 
+	/** Blueprint event called when the player wants to switch to the next weapon. */
+	UFUNCTION(BlueprintNativeEvent, Category = Default, Meta = (DisplayName = "Next Weapon"))
+	void EventNextWeapon();
+
+	/** Blueprint event called when the player wants to switch to the previous weapon. */
+	UFUNCTION(BlueprintNativeEvent, Category = Default, Meta = (DisplayName = "Previous Weapon"))
+	void EventPreviousWeapon();
+	
 private:
 #if WITH_EDITOR
 	/** Checks whether an object is a blueprint derived class or not. */

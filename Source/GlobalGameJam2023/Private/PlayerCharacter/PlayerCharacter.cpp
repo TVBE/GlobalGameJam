@@ -127,6 +127,10 @@ void APlayerCharacter::Stun(const float Duration, const int Intensity)
 	}
 }
 
+void APlayerCharacter::EventPreviousWeapon_Implementation()
+{
+}
+
 void APlayerCharacter::HandleStunEnd()
 {
 	IsStunned = false;
@@ -143,7 +147,11 @@ FVector2D APlayerCharacter::GetCharacterXYVelocity()
 	return FVector2D(ForwardVelocity, SidewaysVelocity);
 }
 
-void APlayerCharacter::Fire_Implementation(const bool Active)
+void APlayerCharacter::EventNextWeapon_Implementation()
+{
+}
+
+void APlayerCharacter::EventFire_Implementation(const bool Active)
 {
 }
 

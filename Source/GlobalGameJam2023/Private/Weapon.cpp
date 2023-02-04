@@ -15,7 +15,10 @@ AWeapon::AWeapon()
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if(GetWorld() && GetWorld()->GetFirstPlayerController())
+	{
+		PlayerCharacter = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	}
 }
 
 // Called every frame

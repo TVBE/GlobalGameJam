@@ -46,6 +46,12 @@ private:
 	void HandleAttackActionReleased();
 
 	UFUNCTION()
+	void HandleWeaponsSwitchNext();
+
+	UFUNCTION()
+	void HandleWeaponsSwitchPrevious();
+
+	UFUNCTION()
 	void RotateToMouseCursor();
 
 	UFUNCTION()

@@ -33,6 +33,10 @@ void APlayerCharacterController::SetupInputComponent()
 
 	InputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &APlayerCharacterController::HandleAttackActionPressed);
 	InputComponent->BindAction(TEXT("Fire"), IE_Released, this, &APlayerCharacterController::HandleAttackActionReleased);
+
+	InputComponent->BindAction(TEXT("NextWeapon"), IE_Pressed, this, &APlayerCharacterController::HandleWeaponsSwitchNext);
+	InputComponent->BindAction(TEXT("PreviousWeapon"), IE_Pressed, this, &APlayerCharacterController::HandleWeaponsSwitchPrevious);
+	
 }
 
 void APlayerCharacterController::Tick(float DeltaSeconds)
@@ -147,7 +151,7 @@ void APlayerCharacterController::HandleAttackActionPressed()
 {
 	if(PlayerCharacter)
 	{
-		PlayerCharacter->Fire(true);
+		PlayerCharacter->EventFire(true);
 	}
 }
 
@@ -155,7 +159,23 @@ void APlayerCharacterController::HandleAttackActionReleased()
 {
 	if(PlayerCharacter)
 	{
-		PlayerCharacter->Fire(false);
+		PlayerCharacter->EventFire(false);
+	}
+}
+
+void APlayerCharacterController::HandleWeaponsSwitchNext()
+{
+	if(PlayerCharacter)
+	{
+		PlayerCharacter->EventNextWeapon();
+	}
+}
+
+void APlayerCharacterController::HandleWeaponsSwitchPrevious()
+{
+	if(PlayerCharacter)
+	{
+		PlayerCharacter->EventPreviousWeapon();
 	}
 }
 
