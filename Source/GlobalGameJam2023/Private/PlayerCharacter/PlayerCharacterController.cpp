@@ -82,17 +82,18 @@ void APlayerCharacterController::RotateToMouseCursor()
 {
 	if (GetPawn())
 	{
-		FVector MouseLocation, MouseDirection;
-		this->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
-        
-		const FVector PlayerLocation {GetPawn()->GetActorLocation()};
-		const FVector TargetLocation {MouseLocation + MouseDirection * (PlayerLocation - MouseLocation).Size()};
-        
-		FRotator TargetRotation = (TargetLocation - PlayerLocation).Rotation();
-		TargetRotation.Pitch = 0.0f;
-		TargetRotation.Roll = 0.0f;
-        
-		GetPawn()->SetActorRotation(TargetRotation);
+		FHitResult HitResult;
+		if (GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, HitResult))
+		{
+			const FVector PlayerLocation {GetPawn()->GetActorLocation()};
+			const FVector TargetLocation {HitResult.Location};
+			
+			FRotator TargetRotation = (TargetLocation - PlayerLocation).Rotation();
+			TargetRotation.Pitch = 0.0f;
+			TargetRotation.Roll = 0.0f;
+			
+			GetPawn()->SetActorRotation(TargetRotation);
+		}
 	}
 }
 
