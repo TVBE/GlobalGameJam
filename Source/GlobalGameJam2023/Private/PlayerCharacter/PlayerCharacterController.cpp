@@ -30,6 +30,9 @@ void APlayerCharacterController::SetupInputComponent()
 
 	InputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &APlayerCharacterController::HandleSprintActionPressed);
 	InputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APlayerCharacterController::HandleSprintActionReleased);
+
+	InputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &APlayerCharacterController::HandleAttackActionPressed);
+	InputComponent->BindAction(TEXT("Fire"), IE_Released, this, &APlayerCharacterController::HandleAttackActionReleased);
 }
 
 void APlayerCharacterController::Tick(float DeltaSeconds)
@@ -144,7 +147,7 @@ void APlayerCharacterController::HandleAttackActionPressed()
 {
 	if(PlayerCharacter)
 	{
-		PlayerCharacter->EventFire(true);
+		PlayerCharacter->Fire(true);
 	}
 }
 
@@ -152,7 +155,7 @@ void APlayerCharacterController::HandleAttackActionReleased()
 {
 	if(PlayerCharacter)
 	{
-		PlayerCharacter->EventFire(false);
+		PlayerCharacter->Fire(false);
 	}
 }
 

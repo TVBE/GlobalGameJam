@@ -133,8 +133,8 @@ public:
 	/** Blueprint event called when the player tries to use their weapon.
 	 *	@Active Whether the Fire InputAction is being pressed or released
 	 */
-	UFUNCTION(BlueprintNativeEvent, Category = Default, Meta = (DisplayName = "Event Fire"))
-	void EventFire(const bool Active);
+	UFUNCTION(BlueprintNativeEvent, Category = Default, Meta = (DisplayName = "Fire"))
+	void Fire(const bool Active);
 
 private:
 #if WITH_EDITOR
