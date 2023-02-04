@@ -61,6 +61,9 @@ void UPlayerCharacterCameraController::TickComponent(float DeltaTime, ELevelTick
 
 void UPlayerCharacterCameraController::UpdateCameraRotation()
 {
-	CameraArm->SetWorldRotation(TargetRotation);
+	if(CameraArm)
+	{
+		CameraArm->SetWorldRotation(TargetRotation);
+	}
 }
 

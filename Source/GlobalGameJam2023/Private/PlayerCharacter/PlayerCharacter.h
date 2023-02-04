@@ -109,9 +109,13 @@ public:
 	UFUNCTION(BlueprintGetter, Category = Components, Meta = (DisplayName = "Character Configuration"))
 	FORCEINLINE FPlayerCharacterConfiguration GetConfiguration() const {return CharacterConfiguration; }
 
-	/** Returns whether the player is currently stunned */
+	/** Returns whether the player is currently stunned. */
 	UFUNCTION(BlueprintGetter, Category = Default, Meta = (DisplayName = "Is Stunned"))
 	FORCEINLINE bool GetIsStunned() const {return IsStunned; }
+
+	/** Returns whether the player can currently sprint. */
+	UFUNCTION(BlueprintGetter, Category = Default, meta = (DisplayName = "Can Sprint"))
+	FORCEINLINE bool CanSprint() const {return !IsStunned; }
 	
 	/** Stuns the player.
 	 *	@Duration Defines how long the player should remain stunned.
