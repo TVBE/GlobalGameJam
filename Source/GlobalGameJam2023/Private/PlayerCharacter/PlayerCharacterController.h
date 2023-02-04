@@ -32,5 +32,14 @@ private:
 	void HandleLateralInput(float Value);
 
 	UFUNCTION()
+	void HandleSprintActionPressed();
+
+	UFUNCTION()
+	void HandleSprintActionReleased();
+
+	UFUNCTION()
 	void RotateToMouseCursor();
+
+	UFUNCTION()
+	void UpdatePendingMovement();
 };

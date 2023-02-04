@@ -4,6 +4,7 @@
 #include "PlayerCharacterController.h"
 
 #include "PlayerCharacter.h"
+#include "PlayerCharacterMovementComponent.h"
 
 void APlayerCharacterController::PostInitProperties()
 {
@@ -26,12 +27,16 @@ void APlayerCharacterController::SetupInputComponent()
 	Super::SetupInputComponent();
 	InputComponent->BindAxis(TEXT("LongitudinalAxis"), this, &APlayerCharacterController::HandleLongitudinalInput);
 	InputComponent->BindAxis(TEXT("LateralAxis"), this, &APlayerCharacterController::HandleLateralInput);
+
+	InputComponent->BindAction(TEXT("Sprint"), IE_Pressed, this, &APlayerCharacterController::HandleSprintActionPressed);
+	InputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &APlayerCharacterController::HandleSprintActionReleased);
 }
 
 void APlayerCharacterController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	RotateToMouseCursor();
+	UpdatePendingMovement();
 }
 
 void APlayerCharacterController::HandleLongitudinalInput(float Value)
@@ -64,6 +69,8 @@ void APlayerCharacterController::HandleLateralInput(float Value)
 	PlayerCharacter->AddMovementInput(DesiredMovementDirection, 1.f);
 }
 
+
+
 void APlayerCharacterController::RotateToMouseCursor()
 {
 	if (GetPawn())
@@ -81,6 +88,58 @@ void APlayerCharacterController::RotateToMouseCursor()
 		GetPawn()->SetActorRotation(TargetRotation);
 	}
 }
+
+void APlayerCharacterController::UpdatePendingMovement()
+{
+	if(PlayerCharacter && PlayerCharacter->GetPlayerCharacterMovement() && PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
+	{
+		const FVector ActorForwardVector = PlayerCharacter->GetActorForwardVector();
+		const FVector ActorVelocity = PlayerCharacter->GetVelocity();
+		const FVector ActorRightVector = PlayerCharacter->GetActorRightVector();
+
+		if(!(FVector::DotProduct(ActorForwardVector, ActorVelocity) > 0.0f &&
+		FMath::Abs(FVector::DotProduct(ActorRightVector, ActorVelocity)) <=
+		FVector::DotProduct(ActorForwardVector, ActorVelocity)))
+		{
+			HandleSprintActionReleased();
+		}
+	}
+}
+
+void APlayerCharacterController::HandleSprintActionPressed()
+{
+	if(PlayerCharacter && PlayerCharacter->CanSprint() && PlayerCharacter->GetPlayerCharacterMovement())
+	{
+		if(!PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
+		{
+			const FVector ActorForwardVector = PlayerCharacter->GetActorForwardVector();
+			const FVector ActorVelocity = PlayerCharacter->GetVelocity();
+			const FVector ActorRightVector = PlayerCharacter->GetActorRightVector();
+
+			if(FVector::DotProduct(ActorForwardVector, ActorVelocity) > 0.0f &&
+			FMath::Abs(FVector::DotProduct(ActorRightVector, ActorVelocity)) <=
+			FVector::DotProduct(ActorForwardVector, ActorVelocity))
+			{
+				PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting = true;
+				PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = PlayerCharacter->GetConfiguration().SprintSpeed;
+			}
+			
+		}
+	}
+}
+
+void APlayerCharacterController::HandleSprintActionReleased()
+{
+	if(PlayerCharacter && PlayerCharacter->GetPlayerCharacterMovement())
+	{
+		if(PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
+		{
+			PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting = false;
+			PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = PlayerCharacter->GetConfiguration().WalkSpeed;
+		}
+	}
+}
+
 
 
 

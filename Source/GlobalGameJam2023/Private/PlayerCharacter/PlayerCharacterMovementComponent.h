@@ -13,5 +13,8 @@ UCLASS(Blueprintable, BlueprintType, ClassGroup=(PlayerCharacter), meta=(Bluepri
 class UPlayerCharacterMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
-	
+
+public:
+	UPROPERTY()
+	bool IsSprinting {false};
 };
