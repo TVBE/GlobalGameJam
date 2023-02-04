@@ -65,15 +65,15 @@ void APlayerCharacter::PostInitProperties()
 			LOG_BLUEPRINT_REQUIRED(this);
 		}
 		/** Check if our components are blueprint derived classes or not. */
-		if(!IsBlueprintClass(CameraController))
+		if(CameraController && !IsBlueprintClass(CameraController))
 		{
 			LOG_BLUEPRINT_REQUIRED(CameraController);
 		}
-		if(!IsBlueprintClass(AudioController))
+		if(AudioController && !IsBlueprintClass(AudioController))
 		{
 			LOG_BLUEPRINT_REQUIRED(AudioController);
 		}
-		if(!IsBlueprintClass(VFXController))
+		if(VFXController && !IsBlueprintClass(VFXController))
 		{
 			LOG_BLUEPRINT_REQUIRED(VFXController)
 		}
