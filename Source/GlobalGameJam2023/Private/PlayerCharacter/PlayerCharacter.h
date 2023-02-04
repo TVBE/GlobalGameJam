@@ -121,7 +121,7 @@ public:
 	void Stun(const float Duration, const int Intensity);
 
 	UFUNCTION(BlueprintPure, Category = Default, Meta = (DisplayName = "Get XY Velocity"))
-	static FVector2D GetCharacterXYVelocity(const ACharacter* Character);
+	FVector2D GetCharacterXYVelocity();
 
 private:
 #if WITH_EDITOR
