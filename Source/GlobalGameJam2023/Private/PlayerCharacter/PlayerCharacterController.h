@@ -20,6 +20,9 @@ private:
 	UPROPERTY()
 	class APlayerCharacter* PlayerCharacter {nullptr};
 
+	UPROPERTY()
+	bool IsSprintPending {false};
+	
 public:
 	virtual void PostInitProperties() override;
 	virtual void BeginPlay() override;
@@ -56,4 +59,13 @@ private:
 
 	UFUNCTION()
 	void UpdatePendingMovement();
+
+	UFUNCTION()
+	void StartSprinting();
+
+	UFUNCTION()
+	void StopSprinting();
+
+	UFUNCTION()
+	bool CanSprint();
 };

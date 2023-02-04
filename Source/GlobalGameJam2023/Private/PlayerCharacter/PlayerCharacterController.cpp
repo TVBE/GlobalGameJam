@@ -108,12 +108,28 @@ void APlayerCharacterController::UpdatePendingMovement()
 		FMath::Abs(FVector::DotProduct(ActorRightVector, ActorVelocity)) <=
 		FVector::DotProduct(ActorForwardVector, ActorVelocity)))
 		{
-			HandleSprintActionReleased();
+			StopSprinting();
 		}
+	}
+	if(IsSprintPending && CanSprint())
+	{
+		StartSprinting();
 	}
 }
 
-void APlayerCharacterController::HandleSprintActionPressed()
+void APlayerCharacterController::StartSprinting()
+{
+	PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting = true;
+	PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = PlayerCharacter->GetConfiguration().SprintSpeed;
+}
+
+void APlayerCharacterController::StopSprinting()
+{
+	PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting = false;
+	PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = PlayerCharacter->GetConfiguration().WalkSpeed;
+}
+
+bool APlayerCharacterController::CanSprint()
 {
 	if(PlayerCharacter && PlayerCharacter->CanSprint() && PlayerCharacter->GetPlayerCharacterMovement())
 	{
@@ -123,26 +139,31 @@ void APlayerCharacterController::HandleSprintActionPressed()
 			const FVector ActorVelocity = PlayerCharacter->GetVelocity();
 			const FVector ActorRightVector = PlayerCharacter->GetActorRightVector();
 
-			if(FVector::DotProduct(ActorForwardVector, ActorVelocity) > 0.0f &&
+			return FVector::DotProduct(ActorForwardVector, ActorVelocity) > 0.0f &&
 			FMath::Abs(FVector::DotProduct(ActorRightVector, ActorVelocity)) <=
-			FVector::DotProduct(ActorForwardVector, ActorVelocity))
-			{
-				PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting = true;
-				PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = PlayerCharacter->GetConfiguration().SprintSpeed;
-			}
-			
+			FVector::DotProduct(ActorForwardVector, ActorVelocity) * 2;
 		}
+	}
+	return false;
+}
+
+void APlayerCharacterController::HandleSprintActionPressed()
+{
+	IsSprintPending = true;
+	if(CanSprint())
+	{
+		StartSprinting();
 	}
 }
 
 void APlayerCharacterController::HandleSprintActionReleased()
 {
+	IsSprintPending = false;
 	if(PlayerCharacter && PlayerCharacter->GetPlayerCharacterMovement())
 	{
 		if(PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
 		{
-			PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting = false;
-			PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed = PlayerCharacter->GetConfiguration().WalkSpeed;
+			StopSprinting();
 		}
 	}
 }
