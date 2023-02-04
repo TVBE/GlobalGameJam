@@ -83,7 +83,16 @@ void APlayerCharacter::PostInitProperties()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if(GetWorld())
+	{
+		if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
+		{
+			PlayerController->bShowMouseCursor = true;
+			PlayerController->bEnableClickEvents = true;
+			PlayerController->bEnableMouseOverEvents = true;
+		}
+	}
+
 }
 
 
