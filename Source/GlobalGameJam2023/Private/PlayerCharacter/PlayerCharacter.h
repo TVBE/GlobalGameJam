@@ -124,8 +124,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Default, Meta = (DisplayName = "Stun Player"))
 	void Stun(const float Duration, const int Intensity);
 
+	/** Returns the X and Y velocity of the player.
+	 * @Return the longitudinal and lateral velocity in their respective X and Y components.
+	 */
 	UFUNCTION(BlueprintPure, Category = Default, Meta = (DisplayName = "Get XY Velocity"))
 	FVector2D GetCharacterXYVelocity();
+
+	/** Blueprint event called when the player tries to use their weapon.
+	 *	@Active Whether the Fire InputAction is being pressed or released
+	 */
+	UFUNCTION(BlueprintNativeEvent, Category = Default, Meta = (DisplayName = "Event Fire"))
+	void EventFire(const bool Active);
 
 private:
 #if WITH_EDITOR

@@ -143,4 +143,8 @@ FVector2D APlayerCharacter::GetCharacterXYVelocity()
 	return FVector2D(ForwardVelocity, SidewaysVelocity);
 }
 
+void APlayerCharacter::EventFire_Implementation(const bool Active)
+{
+}
+
 

@@ -15,6 +15,6 @@ class UPlayerCharacterMovementComponent : public UCharacterMovementComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = Default, Meta = (DisplayName = "Is Sprinting"))
 	bool IsSprinting {false};
 };

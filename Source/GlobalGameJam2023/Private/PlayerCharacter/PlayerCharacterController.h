@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "PlayerCharacterController.generated.h"
 
+
+
 /**
  * 
  */
@@ -36,6 +38,12 @@ private:
 
 	UFUNCTION()
 	void HandleSprintActionReleased();
+
+	UFUNCTION()
+	void HandleAttackActionPressed();
+
+	UFUNCTION()
+	void HandleAttackActionReleased();
 
 	UFUNCTION()
 	void RotateToMouseCursor();

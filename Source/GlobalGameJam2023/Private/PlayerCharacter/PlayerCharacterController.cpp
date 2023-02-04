@@ -140,6 +140,22 @@ void APlayerCharacterController::HandleSprintActionReleased()
 	}
 }
 
+void APlayerCharacterController::HandleAttackActionPressed()
+{
+	if(PlayerCharacter)
+	{
+		PlayerCharacter->EventFire(true);
+	}
+}
+
+void APlayerCharacterController::HandleAttackActionReleased()
+{
+	if(PlayerCharacter)
+	{
+		PlayerCharacter->EventFire(false);
+	}
+}
+
 
 
 
