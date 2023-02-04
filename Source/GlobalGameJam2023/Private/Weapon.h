@@ -19,7 +19,7 @@ private:
 	bool IsInCooldown {false};
 
 	UPROPERTY(BlueprintReadWrite, Category = Default, Meta = (DisplayName = "Is Unlocked", AllowPrivateAccess = "true"))
-	bool IsUnlocked {false};
+	bool IsUnlocked {true}; // Weapons are now unlocked by default.
 	
 public:	
 	// Sets default values for this actor's properties
