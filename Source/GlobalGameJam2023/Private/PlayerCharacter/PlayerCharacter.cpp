@@ -40,6 +40,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera->bWantsInitializeComponent = true;
 	Camera->SetupAttachment(CameraArm);
 	
+	
 }
 
 // Called after construction, but before Beginplay.
