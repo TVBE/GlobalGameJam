@@ -11,21 +11,31 @@ UCLASS(Blueprintable, BlueprintType, ClassGroup=(PlayerCharacter), meta=(Bluepri
 class UPlayerCharacterCameraController : public UActorComponent
 {
 	GENERATED_BODY()
-
+private:
+	UPROPERTY()
+	class USpringArmComponent* CameraArm {nullptr};
+	
+	UPROPERTY()
+	FRotator TargetRotation;
+	
 public:	
 	// Sets default values for this component's properties
 	UPlayerCharacterCameraController();
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	virtual void InitializeComponent() override;
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
+
 private:
-	// Called on Tick
+	// Called on Tick.
+	UFUNCTION()
+	void UpdateCameraRotation();
 	
 
 		
