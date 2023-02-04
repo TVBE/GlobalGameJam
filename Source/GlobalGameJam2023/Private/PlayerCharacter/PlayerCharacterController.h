@@ -22,6 +22,7 @@ public:
 	virtual void PostInitProperties() override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+	virtual void Tick(float DeltaSeconds) override;
 	
 private:
 	UFUNCTION()
@@ -29,4 +30,7 @@ private:
 
 	UFUNCTION()
 	void HandleLateralInput(float Value);
+
+	UFUNCTION()
+	void RotateToMouseCursor();
 };

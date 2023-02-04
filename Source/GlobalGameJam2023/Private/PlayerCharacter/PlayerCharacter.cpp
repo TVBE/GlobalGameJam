@@ -46,6 +46,8 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::PostInitProperties()
 {
 	Super::PostInitProperties();
+	
+	GetCharacterMovement()->MaxWalkSpeed = CharacterConfiguration.WalkSpeed;
 
 	if(UPlayerCharacterMovementComponent* PlayerCharacterMovementComponent {Cast<UPlayerCharacterMovementComponent>(GetCharacterMovement())})
 	{
@@ -95,13 +97,10 @@ void APlayerCharacter::BeginPlay()
 
 }
 
-
-
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	RotateToMouseCursor();
 }
 
 // Called to bind functionality to input
@@ -111,22 +110,27 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
-void APlayerCharacter::RotateToMouseCursor()
+void APlayerCharacter::Stun(const float Duration, const int Intensity)
 {
-	if (const APlayerController* PlayerController {GetWorld()->GetFirstPlayerController()})
+	const int Percentage {FMath::Clamp(Intensity, 0, 100)};
+	const float Speed {CharacterConfiguration.WalkSpeed * (1.0f - Percentage / 100.0f)};
+	if(IsStunned && GetCharacterMovement()->MaxWalkSpeed >= Speed)
 	{
-		FVector MouseLocation, MouseDirection;
-		PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
-        
-		const FVector PlayerLocation {GetActorLocation()};
-		const FVector TargetLocation {MouseLocation + MouseDirection * (PlayerLocation - MouseLocation).Size()};
-        
-		FRotator TargetRotation = (TargetLocation - PlayerLocation).Rotation();
-		TargetRotation.Pitch = 0.0f;
-		TargetRotation.Roll = 0.0f;
-        
-		SetActorRotation(TargetRotation);
+		return;
 	}
+	if(GetCharacterMovement())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = Speed;
+		IsStunned = true;
+		GetWorld()->GetTimerManager().SetTimer(StunTimerHandle, this, &APlayerCharacter::HandleStunEnd, Duration, false);
+		OnStunnedDelegate.Broadcast();
+	}
+}
+
+void APlayerCharacter::HandleStunEnd()
+{
+	IsStunned = false;
+	GetCharacterMovement()->MaxWalkSpeed = CharacterConfiguration.WalkSpeed;
 }
 
 

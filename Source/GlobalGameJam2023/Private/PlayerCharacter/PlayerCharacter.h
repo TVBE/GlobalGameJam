@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "CineCameraComponent.h"
+#include "PlayerCharacterConfiguration.h"
 #include "PlayerCharacter.generated.h"
 
 UENUM(BlueprintType)
@@ -14,11 +15,17 @@ enum EAxisOrientation
 	LATERAL						UMETA(DisplayName = "Lateral"),
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStunned);
+
 UCLASS()
 class APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+public:
+	/** The event delegate for when the player is stunned. */
+	FOnStunned OnStunnedDelegate;
+	
 private:
 	/** The Camera Controller responsible for controlling the camera.*/
 	UPROPERTY(BlueprintGetter = GetCameraController, EditAnywhere, Category = Components, Meta = (DisplayName = "Camera Controller"))
@@ -43,6 +50,18 @@ private:
 	/** The camera arm for the player. */
 	UPROPERTY(BlueprintGetter = GetCameraArm, EditAnywhere, Category = Components, Meta = (DisplayName = "Camera Arm"))
 	class USpringArmComponent* CameraArm {nullptr};
+
+	/** The character configuration. */
+	UPROPERTY(BlueprintGetter = GetConfiguration, EditAnywhere, Category = Configuration, Meta = (DisplayName = "Player Configuration"))
+	FPlayerCharacterConfiguration CharacterConfiguration {FPlayerCharacterConfiguration()};
+
+	/** When true, the player is currently stunned. */
+	UPROPERTY(BlueprintGetter = GetIsStunned, Category = Default, Meta = (DisplayName = "Is Stunned"))
+	bool IsStunned {false};
+
+	/** The timer handle for the stun effect. */
+	UPROPERTY()
+	FTimerHandle StunTimerHandle;
 	
 public:
 	// Sets default values for this character's properties
@@ -86,14 +105,29 @@ public:
 	UFUNCTION(BlueprintGetter, Category = Components, Meta = (DisplayName = "Camera Arm."))
 	FORCEINLINE USpringArmComponent* GetCameraArm() const {return CameraArm; }
 
-	/** Converts the camera rotation to an axis input. */
-	UFUNCTION()
-	void RotateToMouseCursor();
+	/** Returns the Player Character Configuration of the player. */
+	UFUNCTION(BlueprintGetter, Category = Components, Meta = (DisplayName = "Character Configuration"))
+	FORCEINLINE FPlayerCharacterConfiguration GetConfiguration() const {return CharacterConfiguration; }
 
+	/** Returns whether the player is currently stunned */
+	UFUNCTION(BlueprintGetter, Category = Default, Meta = (DisplayName = "Is Stunned"))
+	FORCEINLINE bool GetIsStunned() const {return IsStunned; }
+	
+	/** Stuns the player.
+	 *	@Duration Defines how long the player should remain stunned.
+	 *	@Intensity Defines how much the player should be stunned. Value equals percentage of movement speed reduction: a value of 100 or above will completely lock the player.
+	 */
+	UFUNCTION(BlueprintCallable, Category = Default, Meta = (DisplayName = "Stun Player"))
+	void Stun(const float Duration, const int Intensity);
+
+private:
 #if WITH_EDITOR
 	/** Checks whether an object is a blueprint derived class or not. */
 	static bool IsBlueprintClass(const UObject* Object)
 	{return static_cast<bool>(Object->GetClass()->ClassFlags & CLASS_CompiledFromBlueprint);}
 #endif
+
+	UFUNCTION()
+	void HandleStunEnd();
 
 };
