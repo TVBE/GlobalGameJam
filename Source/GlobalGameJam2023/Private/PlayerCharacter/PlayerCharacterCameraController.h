@@ -12,7 +12,13 @@ class UPlayerCharacterCameraController : public UActorComponent
 {
 	GENERATED_BODY()
 private:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = Default, Meta = (DisplayName = "Player Character", AllowPrivateAccess = "true"))
+	class APlayerCharacter* PlayerCharacter {nullptr};
+
+	UPROPERTY(BlueprintReadOnly, Category = Default, Meta = (DisplayName = "Camera", AllowPrivateAccess = "true"))
+	class UCineCameraComponent* Camera {nullptr};
+	
+	UPROPERTY(BlueprintReadOnly, Category = Default, Meta = (DisplayName = "Camera Arm", AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraArm {nullptr};
 	
 	UPROPERTY()

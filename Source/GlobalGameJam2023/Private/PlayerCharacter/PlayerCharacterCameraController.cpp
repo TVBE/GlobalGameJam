@@ -21,6 +21,14 @@ void UPlayerCharacterCameraController::InitializeComponent()
 	
 	if(GetOwner())
 	{
+		if(APlayerCharacter* PlayerPawn {Cast<APlayerCharacter>(GetOwner())})
+		{
+			PlayerCharacter = PlayerPawn;
+		}
+		if(UCineCameraComponent* CineCamera {Cast<APlayerCharacter>(GetOwner())->GetCamera()})
+		{
+			Camera = CineCamera;
+		}
 		if(USpringArmComponent* SpringArmComponent {Cast<APlayerCharacter>(GetOwner())->GetCameraArm()})
 		{
 			CameraArm = SpringArmComponent;
