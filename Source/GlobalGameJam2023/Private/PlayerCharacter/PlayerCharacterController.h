@@ -14,4 +14,19 @@ class APlayerCharacterController : public APlayerController
 {
 	GENERATED_BODY()
 	
+private:
+	UPROPERTY()
+	class APlayerCharacter* PlayerCharacter {nullptr};
+
+public:
+	virtual void PostInitProperties() override;
+	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
+	
+private:
+	UFUNCTION()
+	void HandleLongitudinalInput(float Value);
+
+	UFUNCTION()
+	void HandleLateralInput(float Value);
 };
