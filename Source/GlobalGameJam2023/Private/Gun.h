@@ -15,7 +15,11 @@ class AGun : public AWeapon
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintPure, Category = Default, Meta = (DisplayName = "Get Gun Trace"))
-	FHitResult GetGunTrace(float Accuracy);
+	UFUNCTION(BlueprintCallable, Category = Default, Meta = (DisplayName = "Get Gun Trace"))
+	FHitResult LineTraceFromPlayerToCursor(float Deviation);
+
+	/** Returns the mouse cursor world location with some deviation to simulate accuracy loss. */
+	UFUNCTION(BlueprintCallable, Category = Default, Meta = (DisplayName = "Get Gun Trace Target"))
+	FVector GetCursorLocationWithDeviation(float Deviation, APlayerController* PlayerController);
 	
 };
