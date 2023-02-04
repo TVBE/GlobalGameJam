@@ -35,12 +35,17 @@ APlayerCharacter::APlayerCharacter()
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Arm"));
 	CameraArm->bWantsInitializeComponent = true;
 	CameraArm->SetupAttachment(this->RootComponent);
+	CameraArm->SetRelativeRotation(FRotator(-35.0,45.0,0.0));
+	CameraArm->TargetArmLength = 10000;
+	CameraArm->bInheritPitch = false;
+	CameraArm->bInheritRoll = false;
+	CameraArm->bInheritYaw = false;
+	CameraArm->bEnableCameraLag = true;
+	CameraArm->CameraLagSpeed = 10;
 
 	Camera = CreateDefaultSubobject<UCineCameraComponent>(TEXT("Camera"));
 	Camera->bWantsInitializeComponent = true;
 	Camera->SetupAttachment(CameraArm);
-	
-	
 }
 
 // Called after construction, but before Beginplay.
