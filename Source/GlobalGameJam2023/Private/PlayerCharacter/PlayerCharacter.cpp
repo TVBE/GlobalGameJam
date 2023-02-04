@@ -133,4 +133,19 @@ void APlayerCharacter::HandleStunEnd()
 	GetCharacterMovement()->MaxWalkSpeed = CharacterConfiguration.WalkSpeed;
 }
 
+FVector2D APlayerCharacter::GetCharacterXYVelocity(const ACharacter* Character)
+{
+	if (!Character)
+	{
+		return FVector2D::ZeroVector;
+	}
+
+	const FVector Velocity = Character->GetVelocity();
+	const FVector Forward = Character->GetActorForwardVector();
+	const FVector Right = Character->GetActorRightVector();
+	const float ForwardVelocity = FVector::DotProduct(Velocity, Forward);
+	const float SidewaysVelocity = FVector::DotProduct(Velocity, Right);
+	return FVector2D(ForwardVelocity, SidewaysVelocity);
+}
+
 
