@@ -37,9 +37,9 @@ APlayerCharacter::APlayerCharacter()
 	CameraArm->SetupAttachment(this->RootComponent);
 	CameraArm->SetRelativeRotation(FRotator(-35.0,45.0,0.0));
 	CameraArm->TargetArmLength = 10000;
-	CameraArm->bInheritPitch = false;
-	CameraArm->bInheritRoll = false;
-	CameraArm->bInheritYaw = false;
+	CameraArm->bInheritPitch = true;
+	CameraArm->bInheritRoll = true;
+	CameraArm->bInheritYaw = true;
 	CameraArm->bEnableCameraLag = true;
 	CameraArm->CameraLagSpeed = 10;
 
