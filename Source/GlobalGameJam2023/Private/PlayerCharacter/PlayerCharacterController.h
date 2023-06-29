@@ -9,63 +9,70 @@
 
 
 /**
- * 
+ *
  */
 UCLASS()
 class APlayerCharacterController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
 private:
 	UPROPERTY()
-	class APlayerCharacter* PlayerCharacter {nullptr};
+		class APlayerCharacter* PlayerCharacter{ nullptr };
 
 	UPROPERTY()
-	bool IsSprintPending {false};
-	
+		bool IsSprintPending{ false };
+
 public:
 	virtual void PostInitProperties() override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void Tick(float DeltaSeconds) override;
-	
+
 private:
 	UFUNCTION()
-	void HandleLongitudinalInput(float Value);
+		void HandleLongitudinalInput(float Value);
 
 	UFUNCTION()
-	void HandleLateralInput(float Value);
+		void HandleLateralInput(float Value);
 
 	UFUNCTION()
-	void HandleSprintActionPressed();
+		void HandleSprintActionPressed();
 
 	UFUNCTION()
-	void HandleSprintActionReleased();
+		void HandleSprintActionReleased();
 
 	UFUNCTION()
-	void HandleAttackActionPressed();
+		void HandleAttackActionPressed();
 
 	UFUNCTION()
-	void HandleAttackActionReleased();
+		void HandleAttackActionReleased();
 
 	UFUNCTION()
-	void HandleWeaponsSwitchNext();
+		void HandleWeaponsSwitchNext();
 
 	UFUNCTION()
-	void HandleWeaponsSwitchPrevious();
+		void HandleWeaponsSwitchPrevious();
 
 	UFUNCTION()
-	void RotateToMouseCursor();
+		void HandleControllerVerticalCursor(float value);
 
 	UFUNCTION()
-	void UpdatePendingMovement();
+		void HandleControllerHorizontalCursor(float value);
 
 	UFUNCTION()
-	void StartSprinting();
+		void RotateToMouseCursor();
 
 	UFUNCTION()
-	void StopSprinting();
+		void UpdatePendingMovement();
 
 	UFUNCTION()
-	bool CanSprint();
+		void StartSprinting();
+
+	UFUNCTION()
+		void StopSprinting();
+
+	UFUNCTION()
+		bool CanSprint();
+
 };

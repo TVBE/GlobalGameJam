@@ -13,9 +13,9 @@ void APlayerCharacterController::PostInitProperties()
 
 void APlayerCharacterController::BeginPlay()
 {
-	if(GetPawn())
+	if (GetPawn())
 	{
-		if(APlayerCharacter* PlayerCharacterPawn {Cast<APlayerCharacter>(GetPawn())})
+		if (APlayerCharacter * PlayerCharacterPawn{ Cast<APlayerCharacter>(GetPawn()) })
 		{
 			PlayerCharacter = PlayerCharacterPawn;
 		}
@@ -36,7 +36,12 @@ void APlayerCharacterController::SetupInputComponent()
 
 	InputComponent->BindAction(TEXT("NextWeapon"), IE_Pressed, this, &APlayerCharacterController::HandleWeaponsSwitchNext);
 	InputComponent->BindAction(TEXT("PreviousWeapon"), IE_Pressed, this, &APlayerCharacterController::HandleWeaponsSwitchPrevious);
-	
+
+	InputComponent->BindAxis(TEXT("LongitudinalAxis"), this, &APlayerCharacterController::HandleLongitudinalInput);
+	InputComponent->BindAxis(TEXT("LateralAxis"), this, &APlayerCharacterController::HandleLateralInput);
+
+	InputComponent->BindAxis(TEXT("GamepadCursorHorizontal"), this, &APlayerCharacterController::HandleControllerHorizontalCursor);
+	InputComponent->BindAxis(TEXT("GamepadCursorVertical"), this, &APlayerCharacterController::HandleControllerVerticalCursor);
 }
 
 void APlayerCharacterController::Tick(float DeltaSeconds)
@@ -44,6 +49,7 @@ void APlayerCharacterController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	RotateToMouseCursor();
 	UpdatePendingMovement();
+
 }
 
 void APlayerCharacterController::HandleLongitudinalInput(float Value)
@@ -52,7 +58,7 @@ void APlayerCharacterController::HandleLongitudinalInput(float Value)
 	{
 		return;
 	}
-	
+
 	FVector CharacterLocation = PlayerCharacter->GetActorLocation();
 	FVector ForwardVector = PlayerCharacter->GetCamera()->GetForwardVector();
 	ForwardVector.Z = 0.f;
@@ -67,7 +73,7 @@ void APlayerCharacterController::HandleLateralInput(float Value)
 	{
 		return;
 	}
-	
+
 	FVector CharacterLocation = PlayerCharacter->GetActorLocation();
 	FVector Right = PlayerCharacter->GetCamera()->GetRightVector();
 	Right.Z = 0.f;
@@ -76,8 +82,6 @@ void APlayerCharacterController::HandleLateralInput(float Value)
 	PlayerCharacter->AddMovementInput(DesiredMovementDirection, 1.f);
 }
 
-
-
 void APlayerCharacterController::RotateToMouseCursor()
 {
 	if (GetPawn())
@@ -85,13 +89,13 @@ void APlayerCharacterController::RotateToMouseCursor()
 		FHitResult HitResult;
 		if (GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, HitResult))
 		{
-			const FVector PlayerLocation {GetPawn()->GetActorLocation()};
-			const FVector TargetLocation {HitResult.Location};
-			
+			const FVector PlayerLocation{ GetPawn()->GetActorLocation() };
+			const FVector TargetLocation{ HitResult.Location };
+
 			FRotator TargetRotation = (TargetLocation - PlayerLocation).Rotation();
 			TargetRotation.Pitch = 0.0f;
 			TargetRotation.Roll = 0.0f;
-			
+
 			GetPawn()->SetActorRotation(TargetRotation);
 		}
 	}
@@ -99,20 +103,21 @@ void APlayerCharacterController::RotateToMouseCursor()
 
 void APlayerCharacterController::UpdatePendingMovement()
 {
-	if(PlayerCharacter && PlayerCharacter->GetPlayerCharacterMovement() && PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
+	if (PlayerCharacter && PlayerCharacter->GetPlayerCharacterMovement() && PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
 	{
 		const FVector ActorForwardVector = PlayerCharacter->GetActorForwardVector();
 		const FVector ActorVelocity = PlayerCharacter->GetVelocity();
 		const FVector ActorRightVector = PlayerCharacter->GetActorRightVector();
 
-		if(!(FVector::DotProduct(ActorForwardVector, ActorVelocity) > 0.0f &&
-		FMath::Abs(FVector::DotProduct(ActorRightVector, ActorVelocity)) <=
-		FVector::DotProduct(ActorForwardVector, ActorVelocity)))
+		//Adjust float value to increase 'sprint fov'
+		if (!(FVector::DotProduct(ActorForwardVector, ActorVelocity) >	-50.0f &&
+			FMath::Abs(FVector::DotProduct(ActorRightVector, ActorVelocity)) <=
+			FVector::DotProduct(ActorForwardVector, ActorVelocity)))
 		{
 			StopSprinting();
 		}
 	}
-	if(IsSprintPending && CanSprint())
+	if (IsSprintPending && CanSprint())
 	{
 		StartSprinting();
 	}
@@ -132,17 +137,17 @@ void APlayerCharacterController::StopSprinting()
 
 bool APlayerCharacterController::CanSprint()
 {
-	if(PlayerCharacter && PlayerCharacter->CanSprint() && PlayerCharacter->GetPlayerCharacterMovement())
+	if (PlayerCharacter && PlayerCharacter->CanSprint() && PlayerCharacter->GetPlayerCharacterMovement())
 	{
-		if(!PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
+		if (!PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
 		{
 			const FVector ActorForwardVector = PlayerCharacter->GetActorForwardVector();
 			const FVector ActorVelocity = PlayerCharacter->GetVelocity();
 			const FVector ActorRightVector = PlayerCharacter->GetActorRightVector();
 
 			return FVector::DotProduct(ActorForwardVector, ActorVelocity) > 0.0f &&
-			FMath::Abs(FVector::DotProduct(ActorRightVector, ActorVelocity)) <=
-			FVector::DotProduct(ActorForwardVector, ActorVelocity) * 2;
+				FMath::Abs(FVector::DotProduct(ActorRightVector, ActorVelocity)) <=
+				FVector::DotProduct(ActorForwardVector, ActorVelocity) * 2;
 		}
 	}
 	return false;
@@ -151,7 +156,7 @@ bool APlayerCharacterController::CanSprint()
 void APlayerCharacterController::HandleSprintActionPressed()
 {
 	IsSprintPending = true;
-	if(CanSprint())
+	if (CanSprint())
 	{
 		StartSprinting();
 	}
@@ -160,9 +165,9 @@ void APlayerCharacterController::HandleSprintActionPressed()
 void APlayerCharacterController::HandleSprintActionReleased()
 {
 	IsSprintPending = false;
-	if(PlayerCharacter && PlayerCharacter->GetPlayerCharacterMovement())
+	if (PlayerCharacter && PlayerCharacter->GetPlayerCharacterMovement())
 	{
-		if(PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
+		if (PlayerCharacter->GetPlayerCharacterMovement()->IsSprinting)
 		{
 			StopSprinting();
 		}
@@ -171,7 +176,7 @@ void APlayerCharacterController::HandleSprintActionReleased()
 
 void APlayerCharacterController::HandleAttackActionPressed()
 {
-	if(PlayerCharacter)
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->EventFire(true);
 	}
@@ -179,7 +184,7 @@ void APlayerCharacterController::HandleAttackActionPressed()
 
 void APlayerCharacterController::HandleAttackActionReleased()
 {
-	if(PlayerCharacter)
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->EventFire(false);
 	}
@@ -187,7 +192,7 @@ void APlayerCharacterController::HandleAttackActionReleased()
 
 void APlayerCharacterController::HandleWeaponsSwitchNext()
 {
-	if(PlayerCharacter)
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->EventNextWeapon();
 	}
@@ -195,11 +200,48 @@ void APlayerCharacterController::HandleWeaponsSwitchNext()
 
 void APlayerCharacterController::HandleWeaponsSwitchPrevious()
 {
-	if(PlayerCharacter)
+	if (PlayerCharacter)
 	{
 		PlayerCharacter->EventPreviousWeapon();
 	}
 }
+
+void APlayerCharacterController::HandleControllerVerticalCursor(float value)
+{
+	FVector2D CursorPosition;
+	GetMousePosition(CursorPosition.X, CursorPosition.Y);
+
+	const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+	FVector2D ViewportDeadZone = ViewportSize * 0.05f;
+
+	if (CursorPosition.Y > (ViewportSize.Y - ViewportDeadZone.Y)) {
+		if (value > 0.0f) value = 0.0f;
+	}
+	if (CursorPosition.Y < ViewportDeadZone.Y){
+		if (value < 0.0f) value = 0.0f;
+	}
+
+	SetMouseLocation(CursorPosition.X, CursorPosition.Y + value);
+}
+
+void APlayerCharacterController::HandleControllerHorizontalCursor(float value)
+{
+	FVector2D CursorPosition;
+	GetMousePosition(CursorPosition.X, CursorPosition.Y);
+
+	const FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+	FVector2D ViewportDeadZone = ViewportSize * 0.05f;
+
+	if (CursorPosition.X > (ViewportSize.X - ViewportDeadZone.X)) {
+		if (value > 0.0f) value = 0.0f;
+	}
+	if (CursorPosition.X < ViewportDeadZone.X) {
+		if (value < 0.0f) value = 0.0f;
+	}
+
+	SetMouseLocation(CursorPosition.X + value, CursorPosition.Y);
+}
+
 
 
 
